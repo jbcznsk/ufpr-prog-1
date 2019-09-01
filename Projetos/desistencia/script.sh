@@ -73,7 +73,7 @@ done
 
                                 ##### ITEM 4 #####
 
-echo -e "\n[ITEM 4]\n"
+echo -e "\n[ITEM 4]"
 for i in {2014..2018};
 do
     cat evasao-$i.csv | cut -d, -f4 > anos
