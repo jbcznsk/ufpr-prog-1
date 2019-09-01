@@ -39,29 +39,67 @@ cat ranking-geral-s
 #echo -e "RANKING GERAL \n"
 #cat ranking-geral
 
-for i in {4..8}
+ls *.csv > nome-arquivos
+mapfile -t NOMEARQUIVOS < nome-arquivos
+
+#for i in {4..8}
+#do
+#    for j in "${FORMAS[@]}"
+#    do
+#        k=$(grep "${j}" evasao-201$i.csv | wc -l)
+#        echo "$j $k" >> e$i
+#    done
+#
+#    awk '{print $NF,$0}' e$i | sort -nr | cut -f2- -d' ' > evasao-201$i-s
+#    echo -e "\nRANKING 201$i"
+#    cat evasao-201$i-s 
+#
+#done
+
+for i in ${NOMEARQUIVOS[@]}
 do
     for j in "${FORMAS[@]}"
     do
-        k=$(grep "${j}" evasao-201$i.csv | wc -l)
-        echo "$j $k" >> e$i
+        k=$(grep "${j}" ${i} | wc -l)
+        echo "$j $k" >> "$i-"
     done
 
-    awk '{print $NF,$0}' e$i | sort -nr | cut -f2- -d' ' > evasao-201$i-s
-    echo -e "\nRANKING 201$i"
-    cat evasao-201$i-s 
+    awk '{print $NF,$0}' $i- | sort -nr | cut -f2- -d' ' > $i-s
+    echo -e "\nRANKING $i"
+    cat $i-s
+    rm $i- 
 
 done
 
                                 ##### ITEM 4 #####
 
-
+echo -e "\n[ITEM 4]\n"
 for i in {2014..2018};
 do
     cat evasao-$i.csv | cut -d, -f4 > anos
     sed -i 's/ANO_INGRESSO//g' anos      # Tira cabeçalho
-    sed -i '/^$/d' formas                # Tira a linha em branco
+    sed -i '/^$/d' anos                  # Tira a linha em branco
 
-    
+    mapfile -t ANOS < anos
+
+    for j in ${ANOS[@]}
+    do
+        let P=i-j
+        echo $P >> permanencia
+    done
 done
+
+cat permanencia | sort -un > permanencia-s
+mapfile -t PERMANENCIA < permanencia-s
+rm permanencia-s
+
+echo "ALUNOS     ANOS"
+for i in ${PERMANENCIA[@]}
+do 
+    z=$(grep $i permanencia | wc -l)
+    echo "$z          $i"
+done
+
+
+
 
