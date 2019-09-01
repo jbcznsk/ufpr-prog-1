@@ -3,14 +3,16 @@
 # Aluno     : Jorge Lucas Vicilli Jabczenski
 # Matéria   : Programação 1
 # Professor : Albini (Turma D)
- 
+
+                                ##### ITEM 1 #####
 #Descompacta o arquivo
 tar -xzf evasao2014-18.tar.gz
 
+                                ##### ITEM 2 #####
 #Vai para a pasta descompactada e junta todas as evasões em um arquivo só
 cd evasao
 cat evasao* > evasao-geral
-
+                                ##### ITEM 3 #####
 cat evasao-geral | cut -d, -f1 | sort -u > formas
 sed -i 's/FORMA_EVASAO//g' formas    # Tira o cabeçalho
 sed -i '/^$/d' formas                # Tira a linha em branco
@@ -33,4 +35,19 @@ cat ranking-geral-s
 #sed -i 's/\// /g' ranking-geral
 #echo -e "RANKING GERAL \n"
 #cat ranking-geral
+
+for i in {4..8}
+do
+    for j in "${FORMAS[@]}"
+    do
+        k=$(grep "${j}" evasao-201$i.csv | wc -l)
+        echo "201$i -  $j $k" >> e$i
+    done
+
+    awk '{print $NF,$0}' e$i | sort -nr | cut -f2- -d' ' > evasao-201$i-s
+    cat evasao-201$i-s 
+
+do
+
+                                ##### ITEM 4 #####
 
