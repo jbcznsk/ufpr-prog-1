@@ -27,8 +27,11 @@ do
     echo "${i} ${j}" >> ranking-geral   
 done
 
+echo -e "[ITEM 3]"
+
 # Rankeia os tipos de evasão gerais
 awk '{print $NF,$0}' ranking-geral | sort -nr | cut -f2- -d' ' > ranking-geral-s
+echo -e "\nRANKING GERAL"
 cat ranking-geral-s
 
 #sort -t'/' -k2 -r -n -o ranking-geral ranking-geral
@@ -41,13 +44,24 @@ do
     for j in "${FORMAS[@]}"
     do
         k=$(grep "${j}" evasao-201$i.csv | wc -l)
-        echo "201$i -  $j $k" >> e$i
+        echo "$j $k" >> e$i
     done
 
     awk '{print $NF,$0}' e$i | sort -nr | cut -f2- -d' ' > evasao-201$i-s
+    echo -e "\nRANKING 201$i"
     cat evasao-201$i-s 
 
-do
+done
 
                                 ##### ITEM 4 #####
+
+
+for i in {2014..2018};
+do
+    cat evasao-$i.csv | cut -d, -f4 > anos
+    sed -i 's/ANO_INGRESSO//g' anos      # Tira cabeçalho
+    sed -i '/^$/d' formas                # Tira a linha em branco
+
+    
+done
 
