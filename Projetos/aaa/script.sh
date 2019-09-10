@@ -24,7 +24,7 @@ mapfile -t FORMAS < formas
 for i in "${FORMAS[@]}"
 do
     j=$(grep "${i}" evasao-geral | wc -l)
-    echo "${i} ${j}" >> ranking-geral   
+    echo "${i}, ${j}" >> ranking-geral   
 done
 
 echo -e "[ITEM 3]"
@@ -32,8 +32,8 @@ echo -e "[ITEM 3]"
 # Rankeia os tipos de evasão gerais
 awk '{print $NF,$0}' ranking-geral | sort -nr | cut -f2- -d' ' > ranking-geral-s
 echo -e "\nRANKING GERAL"
-#column -t -s'=' ranking-geral-s
-cat ranking-geral-s
+column -t -s',' ranking-geral-s
+#cat ranking-geral-s
 
 #sort -t'/' -k2 -r -n -o ranking-geral ranking-geral
 #sed -i 's/\// /g' ranking-geral
@@ -48,13 +48,13 @@ do
     for j in "${FORMAS[@]}"
     do
         k=$(grep "${j}" ${i} | wc -l)
-        echo "$j $k" >> "$i-"
+        echo "$j , $k" >> "$i-"
     done
 
     awk '{print $NF,$0}' $i- | sort -nr | cut -f2- -d' ' > $i-s
     echo -e "\nRANKING $i"
-    #column -t -s'=' $i-s
-    cat $i-s
+    column -t -s',' $i-s
+    #cat $i-s
     rm $i- 
 
 done
@@ -81,7 +81,7 @@ cat permanencia | sort -un > permanencia-s
 mapfile -t PERMANENCIA < permanencia-s
 rm permanencia-s
 
-echo "ALUNOS     ANOS"
+echo "ALUNOS ANOS" >> permanencia.txt
 for i in ${PERMANENCIA[@]}
 do 
     z=$(grep $i permanencia | wc -l)
