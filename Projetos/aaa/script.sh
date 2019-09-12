@@ -4,15 +4,21 @@
 # Matéria   : Programação 1
 # Professor : Albini (Turma D)
 
+#################################################################################
                                 ##### ITEM 1 #####
+#################################################################################
 #Descompacta o arquivo
 tar -xzf evasao2014-18.tar.gz
 
+#################################################################################
                                 ##### ITEM 2 #####
+#################################################################################
 #Vai para a pasta descompactada e junta todas as evasões em um arquivo só
 cd evasao
 cat evasao* > evasao-geral
+#################################################################################
                                 ##### ITEM 3 #####
+#################################################################################
 cat evasao-geral | cut -d, -f1 | sort -u > formas
 sed -i 's/FORMA_EVASAO//g' formas    # Tira o cabeçalho
 sed -i '/^$/d' formas                # Tira a linha em branco
@@ -58,8 +64,9 @@ do
     rm $i- 
 
 done
-
+#################################################################################
                                 ##### ITEM 4 #####
+#################################################################################
 
 echo -e "\n[ITEM 4]"
 for i in {2014..2018};
@@ -93,3 +100,44 @@ column -t permanencia.txt
 #################################################################################
 #                                   ITEM 5                                      #
 #################################################################################
+echo -e "\n[ITEM 5]"
+
+for i in ${NOMEARQUIVOS[@]}
+do
+    total=$(cat $i | wc -l)   # Conta o total de alunos
+    total=$(expr $total - 1)  # Tira a linha de cabeçalho
+    sem1=$(grep -c 1o $i)     # Conta a quantidade de evasões no 1 semestre
+    sem2=$(grep -c 2o $i)     # Conta a quantidade de evasões no 2 semestre
+    
+    if [ $sem1 -gt $sem2 ]
+    then
+        pctg=$(expr $sem1 \* 100 / $total)
+        sem="1o"
+    else 
+        pctg=$(expr $sem2 \* 100 / $total)
+        sem="2o"
+    fi
+
+    ano=$(echo $i | cut -d'-' -f2 | cut -d'.' -f1)
+    echo "$ano semestre $sem - $pctg%" >> porcentagem-semestre
+done
+column -t porcentagem-semestre
+
+#################################################################################
+#                                   ITEM 6                                      #
+#################################################################################
+echo -e "\n[ITEM 6]\n"
+
+totalpessoas=$(cat evasao-geral | wc -l)  
+totalpessoas=$(expr $totalpessoas - 6)  #Tira as linhas de cabeçalho
+Masculino=$(grep -wc M evasao-geral)
+Feminino=$(grep -wc F evasao-geral)
+
+pctgM=$(expr $Masculino \* 100 / $totalpessoas)
+pctgF=$(expr $Feminino \* 100 / $totalpessoas)
+
+echo "SEXO,MÉDIA EVASÕES (5 anos)" > porcentagem-sexo
+echo "F,$pctgF%" >> porcentagem-sexo
+echo "M,$pctgM%" >> porcentagem-sexo
+
+column -t -s',' porcentagem-sexo
