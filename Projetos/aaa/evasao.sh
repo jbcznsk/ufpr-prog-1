@@ -88,7 +88,7 @@ rm permanencia-s
 echo "ALUNOS ANOS" >> permanencia.txt
 for i in ${PERMANENCIA[@]}
 do 
-    z=$(grep $i permanencia | wc -l)
+    z=$(grep -w $i permanencia | wc -l)
     echo "$z $i" >> permanencia.txt
 done
 
