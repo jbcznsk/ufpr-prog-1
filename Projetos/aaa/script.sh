@@ -21,7 +21,7 @@ cat evasao* > evasao-geral   # Junta todas as evasões em um arquivo só
 #                                     ITEM 3                                    #
 #################################################################################
 
-echo -e "[ITEM 3]"
+echo -e "[ITEM 3]" > saida-geral
 
 cat evasao-geral | cut -d',' -f1 | sort -u > formas # Acha todas as formas de evasão
 sed -i 's/FORMA_EVASAO//g' formas                   # Tira o cabeçalho
@@ -39,9 +39,9 @@ done
 
 # Rankeia os tipos de evasão gerais
 awk '{print $NF,$0}' ranking-geral | sort -nr | cut -f2- -d' ' > ranking-geral-s
-echo -e "\nRANKING GERAL"
+echo -e "\nRANKING GERAL" >> saida-geral
 
-column -t -s',' ranking-geral-s
+column -t -s',' ranking-geral-s >> saida-geral
 
 ls *.csv > nome-arquivos                 # Obtém os nomes de todos os arquivos que contém as evasões
 mapfile -t NOMEARQUIVOS < nome-arquivos  # Cria uma variável com esses nomes
@@ -56,8 +56,8 @@ do
     done
 
     awk '{print $NF,$0}' $i- | sort -nr | cut -f2- -d' ' > $i-s
-    echo -e "\nRANKING $i"
-    column -t -s',' $i-s
+    echo -e "\nRANKING $i" >> saida-geral
+    column -t -s',' $i-s >> saida-geral
     rm $i- 
 done
 
@@ -65,7 +65,7 @@ done
 #                                     ITEM 4                                    #
 #################################################################################
 
-echo -e "\n[ITEM 4]"
+echo -e "\n[ITEM 4]" >> saida-geral
 for i in {2014..2018};
 do
     cat evasao-$i.csv | cut -d, -f4 > anos
@@ -92,13 +92,13 @@ do
     echo "$z $i" >> permanencia.txt
 done
 
-column -t permanencia.txt
+column -t permanencia.txt >> saida-geral
 
 #################################################################################
 #                                   ITEM 5                                      #
 #################################################################################
 
-echo -e "\n[ITEM 5]"
+echo -e "\n[ITEM 5]" >> saida-geral
 
 for i in ${NOMEARQUIVOS[@]}
 do
@@ -120,13 +120,13 @@ do
     echo "$ano semestre $sem - $pctg%" >> porcentagem-semestre
 done
 
-column -t porcentagem-semestre
+column -t porcentagem-semestre >> saida-geral
 
 #################################################################################
 #                                   ITEM 6                                      #
 #################################################################################
 
-echo -e "\n[ITEM 6]\n"
+echo -e "\n[ITEM 6]\n" >> saida-geral
 
 totalpessoas=$(cat evasao-geral | wc -l)  
 totalpessoas=$(expr $totalpessoas - 6)  #Tira as linhas de cabeçalho
@@ -140,7 +140,7 @@ echo "SEXO,MÉDIA EVASÕES (5 anos)" > porcentagem-sexo
 echo "F,$pctgF%" >> porcentagem-sexo
 echo "M,$pctgM%" >> porcentagem-sexo
 
-column -t -s',' porcentagem-sexo
+column -t -s',' porcentagem-sexo >> saida-geral
 
 #################################################################################
 #                                   ITEM 7                                      #
@@ -223,3 +223,7 @@ gnuplot -persist <<-FimDeComando
 FimDeComando
 
 mv evasoes-forma.png ..
+mv saida-geral ..
+cd ..
+rm -r evasao
+cat saida-geral 
